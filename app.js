@@ -9,7 +9,7 @@ const cors = require("cors")
 const app = express();
 
 
-mongoose.connect('mongodb+srv://vszabolcs88:K4j365J7im8mUB.@cluster0.eor0yls.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://vszabolcs88:K4j365J7im8mUB.@cluster0.eor0yls.mongodb.net/test')
 .then(() => {
     console.log('Successfully connected to MongoDB Atlas!');
   })
@@ -24,7 +24,7 @@ app.use((req, res, next) => {
     next();
   });
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 app.use('/api/sauces', stuffRoutes);
 app.use('api/auth', userRouter);
