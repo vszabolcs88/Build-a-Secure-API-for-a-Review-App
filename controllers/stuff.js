@@ -1,17 +1,19 @@
 const modelSauce = require('../models/modelSauce');
 
 exports.createThing = (req, res, next) => {
+    const sauce = JSON.parse(req.body.sauce);
+    const url = req.protocol + '://' + req.get('host');
     const newSauce = new modelSauce({
-        name: req.body.name,
-        description: req.body.description,
-        heat: req.body.heat,
-        likes: req.body.likes,
-        dislikes: req.body.dislikes,
-        imageUrl: req.body.imageUrl,
-        mainPepper: req.body.mainPepper,
-        usersLiked: req.body. usersLiked,
-        usersDisliked: req.body.usersDisliked,
-        userId: req.body.userId
+        name: sauce.name,
+        description: sauce.description,
+        heat: sauce.heat,
+        likes: 0,
+        dislikes: 0,
+        imageUrl: url + '/images/' + req.file.filename,
+        mainPepper: sauce.mainPepper,
+        usersLiked: [],
+        usersDisliked: [],
+        userId: sauce.userId
       });
     newSauce.save().then(
         () =>{
