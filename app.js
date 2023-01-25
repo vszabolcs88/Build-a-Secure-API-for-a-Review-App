@@ -5,10 +5,7 @@ const cors = require("cors");
 const helmet = require('helmet');
 const hpp = require('hpp');
 const rateLimit = require('express-rate-limit');
-
 require('dotenv').config();
-console.log(process.env.MY_VAR);
-console.log(process.env.NUMBER);
 
 const stuffRoutes = require('./routes/sauces');
 const userRouter = require('./routes/user');
@@ -20,7 +17,7 @@ app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({policy: "cross-origin" }));
 
 //connecting to mongoDB
-mongoose.connect('mongodb+srv://vszabolcs88:K4j365J7im8mUB.@cluster0.eor0yls.mongodb.net/test')
+mongoose.connect(process.env.connection_url)
 .then(() => {
     console.log('Successfully connected to MongoDB Atlas!');
   })
@@ -38,10 +35,9 @@ app.use((req, res, next) => {
 //Setting up rate limits
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 8,
   message: 'Too many requests!'
 })
-
 
 //to it
 app.use(cors());
