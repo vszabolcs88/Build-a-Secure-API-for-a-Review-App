@@ -1,15 +1,25 @@
-//MongoDB pw:K4j365J7im8mUB.
-//MongoDB connection: mongodb+srv://vszabolcs88:<password>@cluster0.eor0yls.mongodb.net/?retryWrites=true&w=majority
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const cors = require("cors");
+const helmet = require('helmet');
+const hpp = require('hpp');
+const rateLimit = require('express-rate-limit');
+
+require('dotenv').config();
+console.log(process.env.MY_VAR);
+console.log(process.env.NUMBER);
+
 const stuffRoutes = require('./routes/sauces');
 const userRouter = require('./routes/user');
-const cors = require("cors")
 
 const app = express();
 
+//helmet middleware
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({policy: "cross-origin" }));
 
+//connecting to mongoDB
 mongoose.connect('mongodb+srv://vszabolcs88:K4j365J7im8mUB.@cluster0.eor0yls.mongodb.net/test')
 .then(() => {
     console.log('Successfully connected to MongoDB Atlas!');
@@ -25,11 +35,22 @@ app.use((req, res, next) => {
     next();
   });
 
+//Setting up rate limits
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Too many requests!'
+})
+
+
+//to it
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(hpp());
+app.use(limiter);
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', stuffRoutes);
-app.use('/api/auth', userRouter);
+app.use('/api/auth', limiter, userRouter);
 
 module.exports = app;
